@@ -1,19 +1,20 @@
 package views;
 
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import dao.AlumnoDAO;
 import models.Alumno;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-public class MatriculaView {
+public class CrearAlumnoView {
 
 	private JFrame frame;
 	private JTextField tfNombre;
@@ -21,24 +22,15 @@ public class MatriculaView {
 	private JTextField tfCiclo;
 	private JTextField tfMedia;
 	private JLabel lblMatricula;
-	private JButton btnAtras;
-	private JButton btnSiguiente;
 	private AlumnoDAO alumnoDAO;
-	private ArrayList<Alumno> alumnos;
-	private int indice;
 	private JButton btnCrear;
 
 	/**
 	 * Create the application.
 	 */
-	public MatriculaView() {
+	public CrearAlumnoView() {
 		initialize();
 		this.alumnoDAO = new AlumnoDAO();
-		this.alumnos = alumnoDAO.getAll();
-		indice = 0;
-		if (this.alumnos.size() > 0) {
-			printAlumno();
-		}
 	}
 
 	/**
@@ -51,60 +43,34 @@ public class MatriculaView {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
-		lblMatricula = new JLabel("Matr\u00EDculas");
+		lblMatricula = new JLabel("Crear alumno");
 		lblMatricula.setFont(new Font("Tahoma", Font.PLAIN, 37));
-		lblMatricula.setBounds(203, 11, 192, 45);
+		lblMatricula.setBounds(152, 11, 243, 45);
 		frame.getContentPane().add(lblMatricula);
 
-		btnAtras = new JButton("<");
-		btnAtras.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				indice--;
-				if(indice < 0) {
-					indice = alumnos.size() - 1;
-				}
-				printAlumno();
-			}
-		});
-		btnAtras.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		btnAtras.setBounds(10, 11, 59, 45);
-		frame.getContentPane().add(btnAtras);
-
-		btnSiguiente = new JButton(">");
-		btnSiguiente.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				indice++;
-				if(indice == alumnos.size()) {
-					indice = 0;
-				}
-				printAlumno();
-			}
-		});
-		btnSiguiente.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		btnSiguiente.setBounds(496, 16, 59, 45);
-		frame.getContentPane().add(btnSiguiente);
 
 		tfNombre = new JTextField();
-		tfNombre.setEditable(false);
+		tfNombre.setText("nombre");
 		tfNombre.setBounds(101, 123, 243, 26);
 		frame.getContentPane().add(tfNombre);
 		tfNombre.setColumns(10);
 
 		tfApellidos = new JTextField();
-		tfApellidos.setEditable(false);
+		tfApellidos.setText("apellidos");
 		tfApellidos.setColumns(10);
 		tfApellidos.setBounds(101, 170, 243, 26);
 		frame.getContentPane().add(tfApellidos);
 
 		tfCiclo = new JTextField();
-		tfCiclo.setEditable(false);
+		tfCiclo.setToolTipText("ciclo");
+		tfCiclo.setText("ciclo");
 		tfCiclo.setColumns(10);
 		tfCiclo.setBounds(101, 217, 243, 26);
 		frame.getContentPane().add(tfCiclo);
 
 		tfMedia = new JTextField();
+		tfMedia.setToolTipText("media");
 		tfMedia.setFont(new Font("Tahoma", Font.PLAIN, 26));
-		tfMedia.setEditable(false);
 		tfMedia.setBounds(398, 123, 86, 70);
 		frame.getContentPane().add(tfMedia);
 		tfMedia.setColumns(10);
@@ -112,19 +78,30 @@ public class MatriculaView {
 		btnCrear = new JButton("Crear");
 		btnCrear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new CrearAlumnoView();
-				frame.dispose();
+				insertarAlumno();
 			}
 		});
-		btnCrear.setBounds(67, 351, 89, 23);
+		btnCrear.setBounds(216, 332, 89, 23);
 		frame.getContentPane().add(btnCrear);
 	}
 
-	private void printAlumno() {
-		Alumno a = alumnos.get(indice);
-		tfNombre.setText(a.getNombre());
-		tfApellidos.setText(a.getApellidos());
-		tfCiclo.setText(a.getCiclo());
-		tfMedia.setText(String.valueOf(a.getMedia()));
+	private void insertarAlumno() {
+		if(tfApellidos.getText().isEmpty() || tfNombre.getText().isEmpty() || 
+				tfCiclo.getText().isEmpty() || tfMedia.getText().isEmpty() ) {
+			JOptionPane.showMessageDialog(btnCrear, "Revisa todos los campos");
+		} else {
+			try {
+				double media = Double.parseDouble(tfMedia.getText());
+				Alumno a = new Alumno(tfNombre.getText(), tfApellidos.getText(),
+						tfCiclo.getText(), media);
+				alumnoDAO.insert(a);
+				JOptionPane.showMessageDialog(btnCrear, "Alumno creado");
+				new MatriculaView();
+				frame.dispose();
+
+			} catch(Exception e) {
+				JOptionPane.showMessageDialog(btnCrear, "La calificación debe ser decimal.");
+			}
+		}
 	}
 }

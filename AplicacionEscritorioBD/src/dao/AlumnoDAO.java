@@ -57,4 +57,16 @@ public class AlumnoDAO {
 		}
 		return alumnos;
 	}
+	
+	public void insert(Alumno a) {
+		final String INSERT = "INSERT INTO alumnos(`nombre`,`apellidos`,`ciclo`,`calificacionMedia`)\r\n"
+				+ "VALUES('"+a.getNombre()+"','"+a.getApellidos()+"','"+a.getCiclo()+"',"+a.getMedia()+");";
+		try {
+			Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(INSERT);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }
