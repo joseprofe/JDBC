@@ -58,7 +58,7 @@ public class LoginView {
 				boolean loginCorrecto = usuarioDAO.login(usuario);
 				if(loginCorrecto) {
 					JOptionPane.showMessageDialog(btnLogin, "Login correcto Bob.");
-					new WelcomeView();
+					new MatriculaView();
 					frame.dispose();
 				} else {
 					JOptionPane.showMessageDialog(btnLogin, "Ah ah aaaah... login incorrecto...");
