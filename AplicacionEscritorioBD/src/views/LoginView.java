@@ -10,6 +10,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import dao.UsuarioDAO;
+import models.Usuario;
 
 public class LoginView {
 
@@ -18,6 +19,7 @@ public class LoginView {
 	private JPasswordField pwdfPassword;
 	private JButton btnLogin;
 	private UsuarioDAO usuarioDAO;
+	private JButton btnRegister;
 
 	/**
 	 * Create the application.
@@ -52,7 +54,8 @@ public class LoginView {
 				// Conectar con la BD y comprobar la tabla usuarios pa ver si furula.
 				String username = tfUsername.getText();
 				String password = new String(pwdfPassword.getPassword());
-				boolean loginCorrecto = usuarioDAO.login(username, password);
+				Usuario usuario = new Usuario(0, username, password);
+				boolean loginCorrecto = usuarioDAO.login(usuario);
 				if(loginCorrecto) {
 					JOptionPane.showMessageDialog(btnLogin, "Login correcto Bob.");
 					new WelcomeView();
@@ -62,7 +65,17 @@ public class LoginView {
 				}
 			}
 		});
-		btnLogin.setBounds(157, 182, 89, 23);
+		btnLogin.setBounds(109, 182, 89, 23);
 		frame.getContentPane().add(btnLogin);
+		
+		btnRegister = new JButton("Registrar");
+		btnRegister.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new RegisterView();
+				frame.dispose();
+			}
+		});
+		btnRegister.setBounds(208, 182, 89, 23);
+		frame.getContentPane().add(btnRegister);
 	}
 }
