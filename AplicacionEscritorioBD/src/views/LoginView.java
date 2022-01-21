@@ -40,6 +40,7 @@ public class LoginView {
 		frame.getContentPane().setLayout(null);
 		
 		tfUsername = new JTextField();
+		tfUsername.setText("charmander");
 		tfUsername.setBounds(109, 65, 186, 20);
 		frame.getContentPane().add(tfUsername);
 		tfUsername.setColumns(10);
